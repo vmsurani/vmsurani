@@ -1,0 +1,5 @@
+export const BASE_URL = "https://api.bharuch-health.com/" 
+export const LOGIN_URL = "/login "
+export const LISTALL_URL = "/user/listAll "
+export const ADD_USER_URL = "/user/add"
+export const ADD_UPDATE_URL = "/user/update "

@@ -1,22 +1,13 @@
-import "./App.css";
+import React from "react";
 import Login from "./Login";
-import { createStore } from "redux";
 
-import { Provider } from "react-redux";
-
-import authReducer from "./Reducer";
-
-
-const store = createStore(authReducer);
-
-function App() {
+// import { BrowserRouter as Router, Route } from "react-router-dom";
+const App = () => {
   return (
     <>
-      <Provider store={store}>
-        <Login />
-      </Provider>
+      <Login />
     </>
   );
-}
+};
 
 export default App;

@@ -1,76 +1,91 @@
-import React from "react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { Box, TextField, Button } from "@mui/material";
-import { useState } from "react";
-import { loginSuccess, loginRequest, loginFailure } from "./Action";
-import axios from "axios";
-import Register from "./Register";
+import { login } from "./Actions/AuthActions";
+import { useHistory } from "react-router-dom";
+import Users from "./Components/Users";
+// import { Typography, TextField, Button, Container, Box } from '@material-ui';
+import { Typography, TextField, Button, Container, Box } from '@mui/material';
 
 const Login = () => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [Data, setData] = useState("");
 
+  //   const history = useHistory();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [error, setError] = useState("");
   const [isShow, setisShow] = useState(true);
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
+  const onSubmit = async (data) => {
+    try {
+      const response = await dispatch(login(data.email, data.password));
+      //   const response = await dispatch(login("kothiyayogesh11@gmail.com", "1234567890"));
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(loginRequest());
-
-    axios
-      .post("https://api.bharuch-health.com/login", {
-        email: "kothiyayogesh11@gmail.com",
-        password: "1234567890",
-      })
-      .then((response) => {
-        // Handle successful login
-        dispatch(loginSuccess());
-        setisShow(false);
-        setData(response.data);
-        console.log(response);
-      })
-
-      .catch((error) => {
-        // Handle login error
-        dispatch(loginFailure(error.message));
-      });
+      const { token } = response.data;
+      localStorage.setItem("token", token);
+      //   history.push('/users');
+      console.log(response);
+      setisShow(false);
+    } catch (error) {
+      setError("Invalid email or password");
+      setisShow(false);
+    }
   };
 
   return (
     <>
       {isShow ? (
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Email"
-            type="email"
-            value={email}
-            onChange={handleEmailChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Password"
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-            fullWidth
-            margin="normal"
-          />
-          <Button type="submit" variant="contained" color="primary">
-            Login
-          </Button>
-        </form>
+        <Container maxWidth="sm">
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="100vh"
+          >
+            <Box width="100%">
+              <Typography variant="h4" align="center" gutterBottom>
+                Login
+              </Typography>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <TextField
+                  label="Email"
+                  {...register("email", { required: true })}
+                  error={errors.email}
+                  helperText={errors.email && "Email is required"}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Password"
+                  type="password"
+                  {...register("password", { required: true })}
+                  error={errors.password}
+                  helperText={errors.password && "Password is required"}
+                  fullWidth
+                  margin="normal"
+                />
+                {error && (
+                  <Typography color="error" align="center" gutterBottom>
+                    {error}
+                  </Typography>
+                )}
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                >
+                  Login
+                </Button>
+              </form>
+            </Box>
+          </Box>
+        </Container>
       ) : (
-        <Register />
+        <Users />
       )}
     </>
   );
