@@ -1,33 +1,33 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { login } from "./Actions/AuthActions";
-import { useHistory } from "react-router-dom";
-import Users from "./Components/Users";
-// import { Typography, TextField, Button, Container, Box } from '@material-ui';
-import { Typography, TextField, Button, Container, Box } from '@mui/material';
+import { login } from "../Actions/AuthActions";
+
+import Users from "./Users";
+
+import { Typography, TextField, Button, Container, Box } from "@mui/material";
+
 
 const Login = () => {
   const dispatch = useDispatch();
 
-  //   const history = useHistory();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const [error, setError] = useState("");
   const [isShow, setisShow] = useState(true);
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     try {
-      const response = await dispatch(login(data.email, data.password));
+      const response = dispatch(login(data.email, data.password));
       //   const response = await dispatch(login("kothiyayogesh11@gmail.com", "1234567890"));
 
-      const { token } = response.data;
+      const { token } = response.data.result.token;
       localStorage.setItem("token", token);
-      //   history.push('/users');
-      console.log(response);
+
       setisShow(false);
     } catch (error) {
       setError("Invalid email or password");

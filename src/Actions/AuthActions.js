@@ -11,10 +11,10 @@ export const login = (email, password) => {
           password,
         }
       );
-      const { token } = response.result.token;
+      const { token } = response.data.result.token;
       dispatch(loginSuccess(token));
       localStorage.setItem("token", token);
-      console.log(response);
+
       return response.data;
     } catch (error) {
       throw error;
